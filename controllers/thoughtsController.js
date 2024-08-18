@@ -1,4 +1,4 @@
-const { ObjectId } = require('mongoose').Types;
+
 const { Thought, User } = require('../models');
 
 
@@ -45,7 +45,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Delete a thought and remove them from the course
+  // Delete a thought 
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndRemove({ _id: req.params.thoughtId });
@@ -73,7 +73,7 @@ module.exports = {
     }
   },
 
-  // Add an assignment to a thought
+ 
   async addAssignment(req, res) {
     console.log('You are adding an assignment');
     console.log(req.body);
@@ -96,7 +96,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Remove assignment from a thought
+  
   async removeAssignment(req, res) {
     try {
       const thought = await Thought.findOneAndUpdate(

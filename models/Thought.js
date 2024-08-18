@@ -3,7 +3,6 @@ const reactionSchema = require('./Reaction');
 const formatMyDate = require('./utils/data.js');
 
 
-// Schema to create Student model
 const thoughtSchema = new Schema(
   {
     thoughtText: {
