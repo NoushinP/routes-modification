@@ -1,25 +1,27 @@
 const { Schema, model } = require('mongoose');
-const assignmentSchema = require('./Assignment');
+const reactionSchema = require('./Reaction');
+const formatMyDate = require('./utils/data.js');
+
 
 // Schema to create Student model
-const studentSchema = new Schema(
+const thoughtSchema = new Schema(
   {
-    first: {
+    thoughtText: {
       type: String,
       required: true,
-      max_length: 50,
+      max_length: 280,
+      min_length: 1,
     },
-    last: {
+    username: {
       type: String,
       required: true,
-      max_length: 50,
     },
-    github: {
-      type: String,
-      required: true,
-      max_length: 50,
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      get:timeFormat => formatMyDate(timeFormat)
     },
-    assignments: [assignmentSchema],
+    reaction: [reactionSchema],
   },
   {
     toJSON: {
@@ -28,6 +30,6 @@ const studentSchema = new Schema(
   }
 );
 
-const Student = model('student', studentSchema);
+const thoughts = model('thought', thoughtSchema);
 
-module.exports = Student;
+module.exports = thoughts;
