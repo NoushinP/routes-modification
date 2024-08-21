@@ -4,7 +4,6 @@ const { Thought, User } = require('../models');
 
 
 module.exports = {
-  // Get all thoughts
   async getThoughts(req, res) {
     try {
       const thoughts = await Thought.find();
@@ -17,7 +16,6 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
-  // Get a single thought
   async getSingleThought(req, res) {
     try {
       const thought = await Thought.findOne({ _id: req.params.thoughtId })
@@ -36,16 +34,6 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
-  // create a new thought
-  async createThought(req, res) {
-    try {
-      const thought = await Thought.create(req.body);
-      res.json(thought);
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  },
-  // Delete a thought 
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndRemove({ _id: req.params.thoughtId });
@@ -54,13 +42,13 @@ module.exports = {
         return res.status(404).json({ message: 'No such thought exists' });
       }
 
-      const course = await User.findOneAndUpdate(
+      const user = await User.findOneAndUpdate(
         { thoughts: req.params.thoughtId },
         { $pull: { thoughts: req.params.thoughtId } },
         { new: true }
       );
 
-      if (!course) {
+      if (!user) {
         return res.status(404).json({
           message: 'Thought deleted, but no user found',
         });
@@ -72,43 +60,24 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-
- 
-  async addAssignment(req, res) {
-    console.log('You are adding an assignment');
-    console.log(req.body);
-
+  async createThought(req, res) {
     try {
-      const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.thoughtId },
-        { $addToSet: { assignments: req.body } },
-        { runValidators: true, new: true }
-      );
-
-      if (!thought) {
-        return res
-          .status(404)
-          .json({ message: 'No thought found with that ID :(' });
-      }
-
-      res.json(thought);
+      const thoughtData = await Thought.create(req.body);
+      res.status(200).json(thoughtData);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(400).json(err);
     }
   },
-  
-  async removeAssignment(req, res) {
+  async updateThought(req, res) {
     try {
       const thought = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
-        { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
+        { $set: req.body },
         { runValidators: true, new: true }
       );
 
       if (!thought) {
-        return res
-          .status(404)
-          .json({ message: 'No thought found with that ID :(' });
+        res.status(404).json({ message: 'No thought with this id!' });
       }
 
       res.json(thought);
